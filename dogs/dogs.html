@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Рандомная собака</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style/style.css">
+</head>
+
+<body>
+    <section class="main-section">
+        <h1 class="main-header">dogs.io</h1>
+        <img class="dog" src="img/dog.svg" alt="Дефолтная собака">
+        <button class="magic-button">some magic!</button>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async function () {
+            const dog = document.querySelector('.dog');
+            preloadedDogImage = new Image();
+            let response = await fetch('https://dog.ceo/api/breeds/image/random');
+            let json = await response.json();
+
+            preloadedDogImage.src = json.message;
+
+            document.querySelector('.magic-button').addEventListener('click', async function () {
+                dog.src = preloadedDogImage.src;
+
+                response = await fetch('https://dog.ceo/api/breeds/image/random');
+                json = await response.json();
+                preloadedDogImage.src = json.message;
+            });
+        });
+    </script>
+</body>
+
+</html>
