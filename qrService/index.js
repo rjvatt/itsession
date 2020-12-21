@@ -41,7 +41,12 @@ app.get('/getqr', (req, res) => {
 
 app.post('/checkqr', function(req, res) {
     if (jsonDB.hasOwnProperty(req.body.code)) {
+        //Удаляем из БД токен
         delete jsonDB[req.body.code];
+
+        //А затем сохранить в файле
+        fs.writeFileSync(fileDataBaseName, JSON.stringify(jsonDB));
+
         res.send(JSON.stringify({ allow: 'yes' }));
     } else {
         res.send(JSON.stringify({ allow: 'no' }));
