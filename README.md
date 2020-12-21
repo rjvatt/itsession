@@ -1,3 +1,3 @@
 # Репозиторий для ДЗ сессии для наставников IT-Квантума
-Работа на codepen: 
+Собачки на codepen: 
 https://codepen.io/rjvatt/pen/yLaovGG
