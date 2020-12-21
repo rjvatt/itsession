@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style/style.css">
+</head>
+
+<body>
+    <section class="main-section">
+        <a class="button secondary" href="index.html">Главная</a>
+        <a class="button primary get-qr">Получить QR код</a>
+    </section>
+
+    <script src="js/qrcode.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async function() {
+            document.querySelector('.get-qr').addEventListener('click', async function() {
+                console.log('click');
+                //Отправляем запрос на получение токена
+                let response = await fetch('http://192.168.1.71:3000/getqr');
+                let json = await response.json();
+
+                //Создаём канвас, в который поместим QR код и link - ссылку, на которую будем "кликать"
+                var canvas = document.createElement('canvas');
+                var link = document.createElement('a');
+
+                //Используем метод toCanvas библиотеки для создания QR
+                QRCode.toCanvas(canvas, json.token, function(error) {
+                    //Пользуемся toBlob, чтобы из канвас получить блоб, который принимает createObjectURL
+                    canvas.toBlob(function(blob) {
+                        url = URL.createObjectURL(blob);
+                        //обновляем атрибуты ссылки
+                        link.href = url;
+                        link.download = "qrcode.png";
+                        //кликаем, ура!
+                        link.click();
+                    });
+                });
+
+                console.log(json);
+            });
+        });
+    </script>
+</body>
+
+</html>

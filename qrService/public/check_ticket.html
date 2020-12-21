@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style/style.css">
+</head>
+
+<body>
+    <section class="main-section">
+        <a class="button secondary" href="index.html">Главная</a>
+        <a class="button primary check-qr">Проверить QR код</a>
+        <video id="video" autoplay></video>
+
+    </section>
+
+    <script src="js/index.aio.min.js"></script>
+    <script type="text/javascript">
+        var qr = new QrcodeDecoder();
+        var video = document.querySelector("#video");
+        var checkButton = document.querySelector(".check-qr");
+        async function startScan() {
+            if (!qr.isCanvasSupported()) {
+                alert("Your browser doesn't match the required specs.");
+                throw new Error("Canvas and getUserMedia are required");
+            }
+
+            let code = await qr.decodeFromCamera(video);
+            //Получили код - отправляем
+            const response = await fetch("http://localhost:3000/checkqr", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    "code": code.data
+                })
+            });
+
+            var json = await response.json();
+            console.log(json);
+
+            if (json.allow == "yes") {
+                checkButton.classList.add('success');
+                checkButton.classList.remove('primary');
+                checkButton.classList.remove('danger');
+            } else {
+                checkButton.classList.add('danger');
+                checkButton.classList.remove('primary');
+                checkButton.classList.remove('success');
+            }
+
+            qr.stop();
+        }
+
+        checkButton.onclick = startScan;
+    </script>
+    <!-- <script src="js/check_ticket_script.js"></script> -->
+</body>
+
+</html>
